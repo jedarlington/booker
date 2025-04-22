@@ -8,6 +8,7 @@ export default function Create() {
         location: '',
         start: '',
         end: '',
+        eventType: 'appointment'
     });
 
     const handleSubmit = (e) => {
@@ -100,6 +101,21 @@ export default function Create() {
                                 />
                                 {errors.end && (
                                     <p className="mt-2 text-sm text-red-600">{errors.end}</p>
+                                )}
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Event Type
+                                </label>
+                                <input
+                                    type="text"
+                                    value={data.eventType}
+                                    onChange={(e) => setData('eventType', e.target.value)}
+                                    className="block w-full mt-1 border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-300"
+                                />
+                                {errors.eventType && (
+                                    <p className="mt-2 text-sm text-red-600">{errors.eventType}</p>
                                 )}
                             </div>
 
