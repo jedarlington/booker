@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\GoogleCalendar\Event;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class AppointmentsController extends Controller
 {
@@ -25,7 +26,7 @@ class AppointmentsController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Appointments/Create');
     }
 
     /**
@@ -33,7 +34,23 @@ class AppointmentsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'summary' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'location' => 'nullable|string',
+            'start' => 'required|date',
+            'end' => 'required|date|after:start',
+        ]);
+
+        $event = Event::create([
+            'name' => $validated['summary'],
+            'description' => $validated['description'],
+            'location' => $validated['location'],
+            'startDateTime' => Carbon::parse($validated['start']),
+            'endDateTime' => Carbon::parse($validated['end']),
+        ]);
+
+        return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');
     }
 
     /**
