@@ -25,6 +25,19 @@ export default function Index({ events }) {
         }
     };
 
+    const formatDateTime = (dateTime) => {
+        if (!dateTime) return 'N/A';
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+        };
+        return new Intl.DateTimeFormat('en-US', options).format(new Date(dateTime));
+    };
+
     return (
         <AuthenticatedLayout
             header={
@@ -52,7 +65,7 @@ export default function Index({ events }) {
                                             {event.googleEvent.start.date}
                                         </p>
                                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                                            {event.googleEvent.start.dateTime}
+                                            {formatDateTime(event.googleEvent.start.dateTime)}
                                         </p>
                                     </li>
                                 ))}
