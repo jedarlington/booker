@@ -22,4 +22,5 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
-app/google-calendar/service-account-credentials.json
+app/google-calendar/**/*
+storage/app/google-calendar/**/*
