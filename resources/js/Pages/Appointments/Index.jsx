@@ -1,17 +1,18 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
+import { formatDateTime } from '@/Utils/dateUtils';
 
-export default function Index({ events }) {
+export default function Index({ appointments }) {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
-    // Calculate the paginated events
+    // Calculate the paginated appointments.
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const paginatedEvents = events.slice(startIndex, startIndex + itemsPerPage);
+    const paginatedAppointments = appointments.slice(startIndex, startIndex + itemsPerPage);
 
-    // Calculate total pages
-    const totalPages = Math.ceil(events.length / itemsPerPage);
+    // Calculate total pages.
+    const totalPages = Math.ceil(appointments.length / itemsPerPage);
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -23,19 +24,6 @@ export default function Index({ events }) {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
         }
-    };
-
-    const formatDateTime = (dateTime) => {
-        if (!dateTime) return 'N/A';
-        const options = {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
-        };
-        return new Intl.DateTimeFormat('en-US', options).format(new Date(dateTime));
     };
 
     return (
@@ -51,22 +39,27 @@ export default function Index({ events }) {
             <div className="py-12">
                 <div className="mx-auto space-y-6 max-w-7xl sm:px-6 lg:px-8">
                     <div className="p-4 bg-white shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                        {paginatedEvents.length > 0 ? (
+                        {paginatedAppointments.length > 0 ? (
                             <ul className="space-y-4">
-                                {paginatedEvents.map((event, index) => (
+                                {paginatedAppointments.map((appointment, index) => (
                                     <li
                                         key={index}
-                                        className="p-4 bg-gray-100 rounded dark:bg-gray-700"
+                                        className="p-4 transition-colors bg-gray-100 rounded dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
                                     >
-                                        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                                            {event.googleEvent.summary}
-                                        </h3>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                                            {event.googleEvent.start.date}
-                                        </p>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                                            {formatDateTime(event.googleEvent.start.dateTime)}
-                                        </p>
+                                        <a
+                                            href={`/appointments/${appointment.googleEvent.id}`}
+                                            className="block"
+                                        >
+                                            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                                                {appointment.googleEvent.summary}
+                                            </h3>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                {appointment.googleEvent.start.date}
+                                            </p>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                {formatDateTime(appointment.googleEvent.start.dateTime)}
+                                            </p>
+                                        </a>
                                     </li>
                                 ))}
                             </ul>

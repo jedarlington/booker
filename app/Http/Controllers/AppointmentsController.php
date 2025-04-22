@@ -13,10 +13,10 @@ class AppointmentsController extends Controller
      */
     public function index()
     {
-        $events = Event::get();
+        $appointments = Event::get();
 
         return Inertia::render('Appointments/Index', [
-            'events' => $events,
+            'appointments' => $appointments,
         ]);
     }
 
@@ -41,7 +41,15 @@ class AppointmentsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $appointment = Event::find($id);
+
+        if (!$appointment) {
+            abort(404, 'Event not found');
+        }
+
+        return Inertia::render('Appointments/Show', [
+            'appointment' => $appointment,
+        ]);
     }
 
     /**
