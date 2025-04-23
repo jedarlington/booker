@@ -40,7 +40,7 @@ class AppointmentsController extends Controller
             'location' => 'nullable|string',
             'start' => 'required|date',
             'end' => 'required|date|after:start',
-            'eventType' => 'required|string|max:100'
+            // 'eventType' => 'required|string|max:100'
         ]);
 
         $event = Event::create([
@@ -49,7 +49,7 @@ class AppointmentsController extends Controller
             'location' => $validated['location'],
             'startDateTime' => Carbon::parse($validated['start']),
             'endDateTime' => Carbon::parse($validated['end']),
-            'eventType' => $validated['eventType']
+            // 'eventType' => $validated['eventType']
         ]);
 
         return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');

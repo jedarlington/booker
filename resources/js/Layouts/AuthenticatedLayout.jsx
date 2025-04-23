@@ -3,16 +3,27 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
     const { flash } = usePage().props;
-
-    console.log('Flash messages:', flash);
-
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(false);
+
+    useEffect(() => {
+        const darkModePreference = localStorage.getItem('darkMode') === 'true';
+        setIsDarkMode(darkModePreference);
+        document.documentElement.classList.toggle('dark', darkModePreference);
+    }, []);
+
+    const toggleDarkMode = () => {
+        const newMode = !isDarkMode;
+        setIsDarkMode(newMode);
+        localStorage.setItem('darkMode', newMode);
+        document.documentElement.classList.toggle('dark', newMode);
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -35,13 +46,17 @@ export default function AuthenticatedLayout({ header, children }) {
                                 </NavLink>
                                 <NavLink
                                     href={route('appointments.index')}
-                                    active={route().current('appointments.index')}
+                                    active={route().current(
+                                        'appointments.index',
+                                    )}
                                 >
                                     Appointments
                                 </NavLink>
                                 <NavLink
                                     href={route('appointments.create')}
-                                    active={route().current('appointments.create')}
+                                    active={route().current(
+                                        'appointments.create',
+                                    )}
                                 >
                                     Create Appointment
                                 </NavLink>
@@ -55,6 +70,13 @@ export default function AuthenticatedLayout({ header, children }) {
                         </div>
 
                         <div className="hidden sm:ms-6 sm:flex sm:items-center">
+                            <button
+                                onClick={toggleDarkMode}
+                                className="px-3 py-2 text-sm font-medium text-gray-500 transition duration-150 ease-in-out bg-gray-200 border border-transparent rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
+                            >
+                                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                            </button>
+
                             <div className="relative ms-3">
                                 <Dropdown>
                                     <Dropdown.Trigger>

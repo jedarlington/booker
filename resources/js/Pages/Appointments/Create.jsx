@@ -104,7 +104,7 @@ export default function Create() {
                                 )}
                             </div>
 
-                            <div className="mb-4">
+                            {/* <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Event Type
                                 </label>
@@ -117,7 +117,7 @@ export default function Create() {
                                 {errors.eventType && (
                                     <p className="mt-2 text-sm text-red-600">{errors.eventType}</p>
                                 )}
-                            </div>
+                            </div> */}
 
                             <div className="flex items-center justify-end">
                                 <button
