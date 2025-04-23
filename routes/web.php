@@ -24,7 +24,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Appointments.
     Route::get('/appointments', [AppointmentsController::class, 'index'])->name('appointments.index');
+    Route::get('/appointments/create', [AppointmentsController::class, 'create'])->name('appointments.create');
+    Route::post('/appointments', [AppointmentsController::class, 'store'])->name('appointments.store');
     Route::get('/appointments/{id}', [AppointmentsController::class, 'show'])->name('appointments.show');
 });
 

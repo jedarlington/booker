@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\GoogleCalendar\Event;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class AppointmentsController extends Controller
 {
@@ -15,8 +16,12 @@ class AppointmentsController extends Controller
     {
         $appointments = Event::get();
 
+        $filteredAppointments = $appointments->filter(function ($event) {
+            return $event->colorId === '3';
+        });
+
         return Inertia::render('Appointments/Index', [
-            'appointments' => $appointments,
+            'appointments' => $filteredAppointments,
         ]);
     }
 
@@ -25,7 +30,7 @@ class AppointmentsController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Appointments/Create');
     }
 
     /**
@@ -33,7 +38,29 @@ class AppointmentsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'summary' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'location' => 'nullable|string',
+            'start' => 'required|date',
+            'end' => 'required|date|after:start',
+            'colorId' => 'nullable|integer|min:1|max:11', // Validate colorId (Google Calendar supports 1-11)
+        ]);
+
+        $event = Event::create([
+            'name' => $validated['summary'],
+            'description' => $validated['description'],
+            'location' => $validated['location'],
+            'startDateTime' => Carbon::parse($validated['start']),
+            'endDateTime' => Carbon::parse($validated['end']),
+        ]);
+
+        if (!empty($validated['colorId'])) {
+            $event->setColorId($validated['colorId']);
+            $event->save();
+        }
+
+        return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');
     }
 
     /**
