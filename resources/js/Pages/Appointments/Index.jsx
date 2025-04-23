@@ -5,7 +5,7 @@ import { formatDateTime } from '@/Utils/dateUtils';
 
 export default function Index({ appointments }) {
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 10;
 
     // Calculate the paginated appointments.
     const startIndex = (currentPage - 1) * itemsPerPage;

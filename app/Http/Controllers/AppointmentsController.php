@@ -16,8 +16,12 @@ class AppointmentsController extends Controller
     {
         $appointments = Event::get();
 
+        $filteredAppointments = $appointments->filter(function ($event) {
+            return $event->colorId === '3';
+        });
+
         return Inertia::render('Appointments/Index', [
-            'appointments' => $appointments,
+            'appointments' => $filteredAppointments,
         ]);
     }
 
@@ -40,7 +44,7 @@ class AppointmentsController extends Controller
             'location' => 'nullable|string',
             'start' => 'required|date',
             'end' => 'required|date|after:start',
-            // 'eventType' => 'required|string|max:100'
+            'colorId' => 'nullable|integer|min:1|max:11', // Validate colorId (Google Calendar supports 1-11)
         ]);
 
         $event = Event::create([
@@ -49,8 +53,12 @@ class AppointmentsController extends Controller
             'location' => $validated['location'],
             'startDateTime' => Carbon::parse($validated['start']),
             'endDateTime' => Carbon::parse($validated['end']),
-            // 'eventType' => $validated['eventType']
         ]);
+
+        if (!empty($validated['colorId'])) {
+            $event->setColorId($validated['colorId']);
+            $event->save();
+        }
 
         return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');
     }
