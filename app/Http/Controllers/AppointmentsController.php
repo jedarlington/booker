@@ -83,7 +83,7 @@ class AppointmentsController extends Controller
         $appointment = Event::find($id);
 
         if (!$appointment) {
-            abort(404, 'Event not found');
+            abort(404, 'Appointment not found');
         }
 
         return Inertia::render('Appointments/Show', [
@@ -96,7 +96,23 @@ class AppointmentsController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $appointment = Event::find($id);
+
+        if (!$appointment) {
+            abort(404, 'Appointment not found');
+        }
+
+        return Inertia::render('Appointments/Edit', [
+            'appointment' => [
+                'id' => $appointment->id,
+                'name' => $appointment->name,
+                'description' => $appointment->description,
+                'location' => $appointment->location,
+                'startDateTime' => $appointment->startDateTime,
+                'endDateTime' => $appointment->endDateTime,
+                'colorId' => $appointment->colorId,
+            ],
+        ]);
     }
 
     /**
@@ -104,7 +120,34 @@ class AppointmentsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $appointment = Event::find($id);
+
+        if (!$appointment) {
+            abort(404, 'Appointment not found');
+        }
+
+        $validated = $request->validate([
+            'summary' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'location' => 'nullable|string',
+            'start' => 'required|date',
+            'end' => 'required|date|after:start',
+            'colorId' => 'nullable|integer|min:1|max:11',
+        ]);
+
+        $appointment->name = $validated['summary'];
+        $appointment->description = $validated['description'];
+        $appointment->location = $validated['location'];
+        $appointment->startDateTime = Carbon::parse($validated['start']);
+        $appointment->endDateTime = Carbon::parse($validated['end']);
+
+        if (!empty($validated['colorId'])) {
+            $appointment->setColorId($validated['colorId']);
+        }
+
+        $appointment->save();
+
+        return redirect()->route('appointments.index')->with('success', 'Appointment updated successfully.');
     }
 
     /**
@@ -115,11 +158,11 @@ class AppointmentsController extends Controller
         $appointment = Event::find($id);
 
         if (!$appointment) {
-            abort(404, 'Event not found');
+            abort(404, 'Appointment not found');
         }
 
         $appointment->delete();
 
-        return response()->json(['message' => 'Appointment deleted successfully.'], 200);
+        return redirect()->route('appointments.index')->with('success', 'Appointment deleted successfully.');
     }
 }

@@ -1,30 +1,31 @@
+import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm, Link } from '@inertiajs/react';
 
-export default function Create() {
-    const { data, setData, post, processing, errors } = useForm({
-        summary: '',
-        description: '',
-        location: '',
-        start: '',
-        end: '',
-        colorId: '3'
+export default function Edit({ appointment }) {
+    const { data, setData, put, processing, errors } = useForm({
+        summary: appointment.name || '',
+        description: appointment.description || '',
+        location: appointment.location || '',
+        start: appointment.startDateTime || '',
+        end: appointment.endDateTime || '',
+        colorId: appointment.colorId || '',
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/appointments');
+        put(`/appointments/${appointment.id}`);
     };
 
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    New Appointment
+                    Edit Appointment
                 </h2>
             }
         >
-            <Head title="New Appointment" />
+            <Head title="Edit Appointment" />
 
             <div className="py-12">
                 <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
@@ -114,9 +115,9 @@ export default function Create() {
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded cursor-pointer hover:bg-blue-600"
+                                    className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
                                 >
-                                    Create Appointment
+                                    Update Appointment
                                 </button>
                             </div>
                         </form>
