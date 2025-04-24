@@ -16,12 +16,26 @@ class AppointmentsController extends Controller
     {
         $appointments = Event::get();
 
-        $filteredAppointments = $appointments->filter(function ($event) {
-            return $event->colorId === '3';
+        // Filter appointments where colorId is '3' (Grape)
+        $filteredAppointments = $appointments->filter(function ($appointment) {
+            return $appointment->colorId === '3';
         });
 
+        // Map the filtered appointments to ensure they are objects
+        $filteredAppointmentsArray = $filteredAppointments->map(function ($appointment) {
+            return [
+                'id' => $appointment->id,
+                'name' => $appointment->name,
+                'description' => $appointment->description,
+                'location' => $appointment->location,
+                'startDateTime' => $appointment->startDateTime,
+                'endDateTime' => $appointment->endDateTime,
+                'colorId' => $appointment->colorId,
+            ];
+        })->values()->toArray();
+
         return Inertia::render('Appointments/Index', [
-            'appointments' => $filteredAppointments,
+            'appointments' => $filteredAppointmentsArray,
         ]);
     }
 
@@ -44,10 +58,10 @@ class AppointmentsController extends Controller
             'location' => 'nullable|string',
             'start' => 'required|date',
             'end' => 'required|date|after:start',
-            'colorId' => 'nullable|integer|min:1|max:11', // Validate colorId (Google Calendar supports 1-11)
+            'colorId' => 'nullable|integer|min:1|max:11'
         ]);
 
-        $event = Event::create([
+        $appointment = Event::create([
             'name' => $validated['summary'],
             'description' => $validated['description'],
             'location' => $validated['location'],
@@ -56,8 +70,8 @@ class AppointmentsController extends Controller
         ]);
 
         if (!empty($validated['colorId'])) {
-            $event->setColorId($validated['colorId']);
-            $event->save();
+            $appointment->setColorId($validated['colorId']);
+            $appointment->save();
         }
 
         return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');

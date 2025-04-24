@@ -58,7 +58,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         'appointments.create',
                                     )}
                                 >
-                                    Create Appointment
+                                    New Appointment
                                 </NavLink>
                                 {/* <NavLink
                                     href={route('customers.index')}

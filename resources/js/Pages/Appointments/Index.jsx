@@ -1,30 +1,10 @@
+import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
-import { formatDateTime } from '@/Utils/dateUtils';
+import { formatDateTime } from '@/Utils/dateUtils'; // Ensure this utility formats the date correctly
 
 export default function Index({ appointments }) {
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
-
-    // Calculate the paginated appointments.
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const paginatedAppointments = appointments.slice(startIndex, startIndex + itemsPerPage);
-
-    // Calculate total pages.
-    const totalPages = Math.ceil(appointments.length / itemsPerPage);
-
-    const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
-
-    const handlePreviousPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
+    const appointmentList = Array.isArray(appointments) ? appointments : [];
 
     return (
         <AuthenticatedLayout
@@ -39,25 +19,29 @@ export default function Index({ appointments }) {
             <div className="py-12">
                 <div className="mx-auto space-y-6 max-w-7xl sm:px-6 lg:px-8">
                     <div className="p-4 bg-white shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                        {paginatedAppointments.length > 0 ? (
+                        {appointmentList.length > 0 ? (
                             <ul className="space-y-4">
-                                {paginatedAppointments.map((appointment, index) => (
+                                {appointmentList.map((appointment, index) => (
                                     <li
                                         key={index}
                                         className="p-4 transition-colors bg-gray-100 rounded dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
                                     >
                                         <a
-                                            href={`/appointments/${appointment.googleEvent.id}`}
+                                            href={`/appointments/${appointment.id}`}
                                             className="block"
                                         >
-                                            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                                                {appointment.googleEvent.summary}
+                                            <h3 className="mb-4 text-lg font-bold text-gray-800 dark:text-gray-200">
+                                                {appointment.name || 'No Title'}
                                             </h3>
                                             <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                {appointment.googleEvent.start.date}
+                                                <strong>Start:</strong> {appointment.startDateTime
+                                                    ? formatDateTime(appointment.startDateTime)
+                                                    : 'No Start Date'}
                                             </p>
                                             <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                {formatDateTime(appointment.googleEvent.start.dateTime)}
+                                                <strong>End:</strong> {appointment.endDateTime
+                                                    ? formatDateTime(appointment.endDateTime)
+                                                    : 'No End Date'}
                                             </p>
                                         </a>
                                     </li>
@@ -68,31 +52,6 @@ export default function Index({ appointments }) {
                                 No appointments available.
                             </p>
                         )}
-
-                        {/* Pagination Controls */}
-                        <div className="flex justify-between mt-4">
-                            <button
-                                onClick={handlePreviousPage}
-                                disabled={currentPage === 1}
-                                className={`px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded ${
-                                    currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''
-                                }`}
-                            >
-                                Previous
-                            </button>
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                Page {currentPage} of {totalPages}
-                            </span>
-                            <button
-                                onClick={handleNextPage}
-                                disabled={currentPage === totalPages}
-                                className={`px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded ${
-                                    currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''
-                                }`}
-                            >
-                                Next
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
