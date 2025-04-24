@@ -82,12 +82,12 @@ export default function Show({ appointment }) {
                             >
                                 Back to Appointments
                             </a>
-                            <a
+                            <button
                                 onClick={handleDelete}
-                                className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded cursor-pointer hover:bg-red-600"
+                                className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
                             >
                                 Delete Appointment
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
