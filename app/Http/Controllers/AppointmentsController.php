@@ -16,12 +16,10 @@ class AppointmentsController extends Controller
     {
         $appointments = Event::get();
 
-        // Filter appointments where colorId is '3' (Grape)
         $filteredAppointments = $appointments->filter(function ($appointment) {
             return $appointment->colorId === '3';
         });
 
-        // Map the filtered appointments to ensure they are objects
         $filteredAppointmentsArray = $filteredAppointments->map(function ($appointment) {
             return [
                 'id' => $appointment->id,
@@ -114,6 +112,14 @@ class AppointmentsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $appointment = Event::find($id);
+
+        if (!$appointment) {
+            abort(404, 'Event not found');
+        }
+
+        $appointment->delete();
+
+        return response()->json(['message' => 'Appointment deleted successfully.'], 200);
     }
 }

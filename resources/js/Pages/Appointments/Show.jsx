@@ -1,8 +1,25 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { formatDateTime } from '@/Utils/dateUtils';
+import axios from 'axios';
 
 export default function Show({ appointment }) {
+    const { flash } = usePage().props;
+
+    const handleDelete = () => {
+        if (confirm('Are you sure you want to delete this appointment?')) {
+            axios
+                .delete(`/appointments/${appointment.googleEvent.id}`)
+                .then(() => {
+                    window.location.href = '/appointments';
+                })
+                .catch((error) => {
+                    console.error('Error deleting appointment:', error);
+                    alert('Failed to delete the appointment. Please try again.');
+                });
+        }
+    };
+
     return (
         <AuthenticatedLayout
             header={
@@ -58,12 +75,18 @@ export default function Show({ appointment }) {
                                 View in Google Calendar
                             </a>
                         </p>
-                        <div className="mt-6">
+                        <div className="flex mt-6 space-x-4">
                             <a
                                 href="/appointments"
                                 className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
                             >
                                 Back to Appointments
+                            </a>
+                            <a
+                                onClick={handleDelete}
+                                className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded cursor-pointer hover:bg-red-600"
+                            >
+                                Delete Appointment
                             </a>
                         </div>
                     </div>
