@@ -1,22 +1,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { formatDateTime } from '@/Utils/dateUtils';
-import axios from 'axios';
 
 export default function Show({ appointment }) {
-    const {} = usePage().props;
+    const { delete: destroy, processing } = useForm();
 
     const handleDelete = () => {
         if (confirm('Are you sure you want to delete this appointment?')) {
-            axios
-                .delete(`/appointments/${appointment.googleEvent.id}`)
-                .then(() => {
-                    window.location.href = '/appointments';
-                })
-                .catch((error) => {
-                    console.error('Error deleting appointment:', error);
-                    alert('Failed to delete the appointment. Please try again.');
-                });
+            destroy(`/appointments/${appointment.googleEvent.id}`);
         }
     };
 
@@ -76,14 +67,21 @@ export default function Show({ appointment }) {
                             </a>
                         </p>
                         <div className="flex mt-6 space-x-4">
-                            <a
+                            <Link
                                 href="/appointments"
                                 className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
                             >
                                 Back to Appointments
-                            </a>
+                            </Link>
+                            <Link
+                                href={`/appointments/${appointment.googleEvent.id}/edit`}
+                                className="px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded hover:bg-yellow-600"
+                            >
+                                Edit Appointment
+                            </Link>
                             <button
                                 onClick={handleDelete}
+                                disabled={processing}
                                 className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
                             >
                                 Delete Appointment

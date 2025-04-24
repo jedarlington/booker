@@ -1,6 +1,6 @@
 import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { formatDateTime } from '@/Utils/dateUtils'; // Ensure this utility formats the date correctly
 
 export default function Index({ appointments }) {
@@ -9,9 +9,17 @@ export default function Index({ appointments }) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Appointments
-                </h2>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                        Appointments
+                    </h2>
+                    <Link
+                        href="/appointments/create"
+                        className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
+                    >
+                        New Appointment
+                    </Link>
+                </div>
             }
         >
             <Head title="Appointments" />
@@ -26,7 +34,7 @@ export default function Index({ appointments }) {
                                         key={index}
                                         className="p-4 transition-colors bg-gray-100 rounded dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
                                     >
-                                        <a
+                                        <Link
                                             href={`/appointments/${appointment.id}`}
                                             className="block"
                                         >
@@ -43,7 +51,7 @@ export default function Index({ appointments }) {
                                                     ? formatDateTime(appointment.endDateTime)
                                                     : 'No End Date'}
                                             </p>
-                                        </a>
+                                        </Link>
                                     </li>
                                 ))}
                             </ul>
