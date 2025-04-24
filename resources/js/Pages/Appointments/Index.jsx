@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
-import { formatDateTime } from '@/Utils/dateUtils'; // Ensure this utility formats the date correctly
+import { formatDateTime } from '@/Utils/dateUtils';
 
 export default function Index({ appointments }) {
     const appointmentList = Array.isArray(appointments) ? appointments : [];
@@ -17,7 +17,7 @@ export default function Index({ appointments }) {
                         href="/appointments/create"
                         className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
                     >
-                        New Appointment
+                        Add Appointment
                     </Link>
                 </div>
             }

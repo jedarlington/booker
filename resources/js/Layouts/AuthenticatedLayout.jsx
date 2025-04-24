@@ -52,12 +52,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Appointments
                                 </NavLink>
-                                {/* <NavLink
+                                <NavLink
                                     href={route('customers.index')}
                                     active={route().current('customers.index')}
                                 >
                                     Customers
-                                </NavLink> */}
+                                </NavLink>
                             </div>
                         </div>
 
@@ -98,6 +98,11 @@ export default function AuthenticatedLayout({ header, children }) {
                                     <Dropdown.Content>
                                         <Dropdown.Link
                                             href={route('appointments.index')}
+                                        >
+                                            Appointments
+                                        </Dropdown.Link>
+                                        <Dropdown.Link
+                                            href={route('customers.index')}
                                         >
                                             Appointments
                                         </Dropdown.Link>
@@ -189,6 +194,9 @@ export default function AuthenticatedLayout({ header, children }) {
                         <div className="mt-3 space-y-1">
                             <ResponsiveNavLink href={route('appointments.index')}>
                                 Appointments
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink href={route('customers.index')}>
+                                Customers
                             </ResponsiveNavLink>
                             <ResponsiveNavLink href={route('profile.edit')}>
                                 Profile
