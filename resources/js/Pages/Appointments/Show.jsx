@@ -4,7 +4,7 @@ import { formatDateTime } from '@/Utils/dateUtils';
 import axios from 'axios';
 
 export default function Show({ appointment }) {
-    const { flash } = usePage().props;
+    const {} = usePage().props;
 
     const handleDelete = () => {
         if (confirm('Are you sure you want to delete this appointment?')) {
