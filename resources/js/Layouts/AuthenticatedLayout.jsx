@@ -104,7 +104,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <Dropdown.Link
                                             href={route('customers.index')}
                                         >
-                                            Appointments
+                                            Customers
                                         </Dropdown.Link>
                                         <Dropdown.Link
                                             href={route('profile.edit')}
