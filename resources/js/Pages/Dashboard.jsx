@@ -1,12 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
-
-// Helper function to make keys readable
-const makeKeyReadable = (key) => {
-    return key
-        .replace(/([A-Z])/g, ' $1') // Add space before capital letters
-        .replace(/^./, (str) => str.toUpperCase()); // Capitalize the first letter
-};
+import { Head, Link } from '@inertiajs/react';
+import { makeKeyReadable } from '@/Utils/stringUtils';
 
 export default function Dashboard({ data }) {
     return (
@@ -23,7 +17,23 @@ export default function Dashboard({ data }) {
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                         <div className="p-6 text-gray-900 dark:text-gray-100">
-                            {typeof data === 'object' && !Array.isArray(data) ? (
+                            <div className="flex gap-4 mb-6">
+                                <Link
+                                    href="/appointments/create"
+                                    className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+                                >
+                                    New Appointment
+                                </Link>
+                                <Link
+                                    href="/customers/create"
+                                    className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+                                >
+                                    New Customer
+                                </Link>
+                            </div>
+
+                            {/* Display data */}
+                            {/* {typeof data === 'object' && !Array.isArray(data) ? (
                                 Object.entries(data).map(([key, value]) => (
                                     <div
                                         key={key}
@@ -38,7 +48,7 @@ export default function Dashboard({ data }) {
                                 <div className="p-4 my-2 bg-gray-100 rounded shadow dark:bg-gray-700">
                                     <p>{String(data)}</p>
                                 </div>
-                            )}
+                            )} */}
                         </div>
                     </div>
                 </div>

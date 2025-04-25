@@ -9,6 +9,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // Add yesterdays, today and tomorrows appointments to the dashboard.
         $data = [
             'totalCustomers' => Customer::count()
         ];
