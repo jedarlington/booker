@@ -1,14 +1,15 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm, Link } from '@inertiajs/react';
 
-export default function Create() {
+export default function Create({ customers }) {
     const { data, setData, post, processing, errors } = useForm({
         summary: '',
         description: '',
         location: '',
         start: '',
         end: '',
-        colorId: '3'
+        colorId: '3',
+        customer_id: ''
     });
 
     const handleSubmit = (e) => {
@@ -42,6 +43,27 @@ export default function Create() {
                                 />
                                 {errors.summary && (
                                     <p className="mt-2 text-sm text-red-600">{errors.summary}</p>
+                                )}
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Customer
+                                </label>
+                                <select
+                                    value={data.customer_id}
+                                    onChange={(e) => setData('customer_id', e.target.value)}
+                                    className="block w-full mt-1 border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-300"
+                                >
+                                    <option value="">Select a customer</option>
+                                    {customers.map((customer) => (
+                                        <option key={customer.id} value={customer.id}>
+                                            {customer.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.customer_id && (
+                                    <p className="mt-2 text-sm text-red-600">{errors.customer_id}</p>
                                 )}
                             </div>
 

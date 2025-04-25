@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\AppointmentsController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
 use Google\Service\AndroidProvisioningPartner\Resource\Customers;
@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Appointments.
-    Route::resource('appointments', AppointmentsController::class);
+    Route::resource('appointments', AppointmentController::class);
 
     // Customers.
     Route::resource('customers', CustomerController::class);
