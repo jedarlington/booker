@@ -1,6 +1,26 @@
 import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
+
+function CustomerRow({ customer }) {
+    const { delete: destroy, processing } = useForm();
+
+    const handleDelete = () => {
+        if (confirm('Are you sure you want to delete this customer?')) {
+            destroy(`/customers/${customer.id}`);
+        }
+    };
+
+    return (
+        <button
+            onClick={handleDelete}
+            disabled={processing}
+            className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+        >
+            Delete
+        </button>
+    );
+}
 
 export default function Index({ customers }) {
     return (
@@ -67,25 +87,7 @@ export default function Index({ customers }) {
                                                 >
                                                     Edit
                                                 </Link>
-                                                <form
-                                                    method="POST"
-                                                    action={`/customers/${customer.id}`}
-                                                    className="inline"
-                                                    onSubmit={(e) => {
-                                                        e.preventDefault();
-                                                        if (confirm('Are you sure you want to delete this customer?')) {
-                                                            e.target.submit();
-                                                        }
-                                                    }}
-                                                >
-                                                    <input type="hidden" name="_method" value="DELETE" />
-                                                    <button
-                                                        type="submit"
-                                                        className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </form>
+                                                <CustomerRow customer={customer} />
                                             </td>
                                         </tr>
                                     ))}

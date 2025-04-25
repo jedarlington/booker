@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppointmentsController;
-use App\Http\Controllers\CustomersController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
 use Google\Service\AndroidProvisioningPartner\Resource\Customers;
 use Illuminate\Foundation\Application;
@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('appointments', AppointmentsController::class);
 
     // Customers.
-    Route::resource('customers', CustomersController::class);
+    Route::resource('customers', CustomerController::class);
 });
 
 require __DIR__.'/auth.php';
