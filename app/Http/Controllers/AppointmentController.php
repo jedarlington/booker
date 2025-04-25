@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 use Spatie\GoogleCalendar\Event;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use App\Models\Customer;
 
-class AppointmentsController extends Controller
+class AppointmentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -42,7 +43,11 @@ class AppointmentsController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Appointments/Create');
+        $customers = Customer::all(['id', 'name']);
+
+        return Inertia::render('Appointments/Create', [
+            'customers' => $customers
+        ]);
     }
 
     /**
@@ -56,23 +61,36 @@ class AppointmentsController extends Controller
             'location' => 'nullable|string',
             'start' => 'required|date',
             'end' => 'required|date|after:start',
-            'colorId' => 'nullable|integer|min:1|max:11'
+            'colorId' => 'nullable|integer|min:1|max:11',
+            'customer_id' => 'required|exists:customers,id'
         ]);
 
-        $appointment = Event::create([
+        // Fetch the customer's email address
+        $customer = Customer::findOrFail($validated['customer_id']);
+
+        // Create the event with the attendee
+        $event = Event::create([
             'name' => $validated['summary'],
             'description' => $validated['description'],
             'location' => $validated['location'],
             'startDateTime' => Carbon::parse($validated['start']),
-            'endDateTime' => Carbon::parse($validated['end']),
+            'endDateTime' => Carbon::parse($validated['end'])
         ]);
 
+        // if (!empty($customer->email)) {
+        //     $event->addAttendee([
+        //         'email' => $customer->email,
+        //         'name' => $customer->name,
+        //         'responseStatus' => 'needsAction',
+        //     ]);
+        // }
+
         if (!empty($validated['colorId'])) {
-            $appointment->setColorId($validated['colorId']);
-            $appointment->save();
+            $event->setColorId($validated['colorId']);
+            $event->save();
         }
 
-        return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');
+        return redirect()->route('appointments.index')->with('success', 'Appointment created successfully with attendee.');
     }
 
     /**
