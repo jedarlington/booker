@@ -96,14 +96,8 @@ class AppointmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Event $appointment)
     {
-        $appointment = Event::find($id);
-
-        if (!$appointment) {
-            abort(404, 'Appointment not found');
-        }
-
         return Inertia::render('Appointments/Show', [
             'appointment' => $appointment,
         ]);
@@ -112,14 +106,8 @@ class AppointmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Event $appointment)
     {
-        $appointment = Event::find($id);
-
-        if (!$appointment) {
-            abort(404, 'Appointment not found');
-        }
-
         return Inertia::render('Appointments/Edit', [
             'appointment' => [
                 'id' => $appointment->id,
@@ -136,14 +124,8 @@ class AppointmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Event $appointment)
     {
-        $appointment = Event::find($id);
-
-        if (!$appointment) {
-            abort(404, 'Appointment not found');
-        }
-
         $validated = $request->validate([
             'summary' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -171,16 +153,9 @@ class AppointmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Event $appointment)
     {
-        $appointment = Event::find($id);
-
-        if (!$appointment) {
-            abort(404, 'Appointment not found');
-        }
-
         $appointment->delete();
-
         return redirect()->route('appointments.index')->with('success', 'Appointment deleted successfully.');
     }
 }
