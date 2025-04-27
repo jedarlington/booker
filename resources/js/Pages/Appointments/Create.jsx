@@ -1,5 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm, Link } from '@inertiajs/react';
+
+import { useEffect, useRef } from 'react';
+
+import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Create({ customers }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -12,10 +15,27 @@ export default function Create({ customers }) {
         customer_id: ''
     });
 
+    const autocompleteRef = useRef(null);
+    const location = useRef(null);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         post('/appointments');
     };
+
+    useEffect(() => {
+        if (window.google && window.google.maps && window.google.maps.places) {
+            autocompleteRef.current = new google.maps.places.Autocomplete(location.current, {
+                types: ['address'],
+                componentRestrictions: { country: 'uk' },
+            });
+
+            autocompleteRef.current.addListener('place_changed', () => {
+                const place = autocompleteRef.current.getPlace();
+                setData('location', place.formatted_address || location.current.value);
+            });
+        }
+    }, []);
 
     return (
         <AuthenticatedLayout
@@ -87,6 +107,7 @@ export default function Create({ customers }) {
                                 </label>
                                 <input
                                     type="text"
+                                    ref={location}
                                     value={data.location}
                                     onChange={(e) => setData('location', e.target.value)}
                                     className="block w-full mt-1 border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-300"

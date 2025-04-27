@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { useEffect, useRef } from 'react';
 import { Head, useForm, Link } from '@inertiajs/react';
 
 export default function Edit({ appointment }) {
@@ -12,10 +13,27 @@ export default function Edit({ appointment }) {
         colorId: appointment.colorId || '',
     });
 
+    const autocompleteRef = useRef(null);
+    const location = useRef(null);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         put(`/appointments/${appointment.id}`);
     };
+
+    useEffect(() => {
+        if (window.google && window.google.maps && window.google.maps.places) {
+            autocompleteRef.current = new google.maps.places.Autocomplete(location.current, {
+                types: ['address'],
+                componentRestrictions: { country: 'uk' },
+            });
+
+            autocompleteRef.current.addListener('place_changed', () => {
+                const place = autocompleteRef.current.getPlace();
+                setData('location', place.formatted_address || location.current.value);
+            });
+        }
+    }, []);
 
     return (
         <AuthenticatedLayout
@@ -66,6 +84,7 @@ export default function Edit({ appointment }) {
                                 </label>
                                 <input
                                     type="text"
+                                    ref={location}
                                     value={data.location}
                                     onChange={(e) => setData('location', e.target.value)}
                                     className="block w-full mt-1 border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-300"
