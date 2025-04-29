@@ -29,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
                 abort(404, 'Appointment not found.');
             }
         });
+
         Vite::prefetch(concurrency: 3);
     }
 }

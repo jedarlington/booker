@@ -17,7 +17,7 @@ export default function Dashboard({ data }) {
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                         <div className="p-6 text-gray-900 dark:text-gray-100">
-                            <div className="flex gap-4 mb-6">
+                            <div className="flex gap-4">
                                 <Link
                                     href="/appointments/create"
                                     className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
@@ -29,6 +29,12 @@ export default function Dashboard({ data }) {
                                     className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
                                 >
                                     New Customer
+                                </Link>
+                                <Link
+                                    href="/auth/google"
+                                    className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
+                                >
+                                    Connect Google Calendar
                                 </Link>
                             </div>
 

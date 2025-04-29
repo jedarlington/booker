@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\GoogleController;
 use Google\Service\AndroidProvisioningPartner\Resource\Customers;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -28,11 +29,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Appointments.
+    // Appointments
     Route::resource('appointments', AppointmentController::class);
 
-    // Customers.
+    // Customers
     Route::resource('customers', CustomerController::class);
 });
+
+// Google Authentication
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
 require __DIR__.'/auth.php';
