@@ -7,8 +7,6 @@ use Spatie\GoogleCalendar\Event;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use App\Models\Customer;
-use Google_Client;
-use Google_Service_Calendar;
 
 class AppointmentController extends Controller
 {
@@ -159,37 +157,5 @@ class AppointmentController extends Controller
     {
         $appointment->delete();
         return redirect()->route('appointments.index')->with('success', 'Appointment deleted successfully.');
-    }
-
-    public function createEvent(Request $request)
-    {
-        $user = Auth::user();
-
-        if (!$user->google_token) {
-            return redirect()->route('google.login')->with('error', 'Please connect your Google account first.');
-        }
-
-        $client = new Google_Client();
-        $client->setAccessToken($user->google_token);
-
-        if ($client->isAccessTokenExpired()) {
-            $client->refreshToken($user->google_refresh_token);
-            $user->google_token = $client->getAccessToken();
-            $user->save();
-        }
-
-        $service = new Google_Service_Calendar($client);
-
-        $event = new \Google_Service_Calendar_Event([
-            'summary' => $request->summary,
-            'location' => $request->location,
-            'description' => $request->description,
-            'start' => ['dateTime' => $request->start, 'timeZone' => 'UTC'],
-            'end' => ['dateTime' => $request->end, 'timeZone' => 'UTC'],
-        ]);
-
-        $service->events->insert('primary', $event);
-
-        return redirect()->route('appointments.index')->with('success', 'Event created successfully.');
     }
 }
