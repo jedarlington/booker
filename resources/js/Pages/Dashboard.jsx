@@ -30,12 +30,12 @@ export default function Dashboard({ data }) {
                                 >
                                     New Customer
                                 </Link>
-                                <Link
+                                <a
                                     href="/auth/google"
                                     className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
                                 >
                                     Connect Google Calendar
-                                </Link>
+                                </a>
                             </div>
 
                             {/* Display data */}
