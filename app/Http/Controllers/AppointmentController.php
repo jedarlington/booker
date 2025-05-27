@@ -158,4 +158,31 @@ class AppointmentController extends Controller
         $appointment->delete();
         return redirect()->route('appointments.index')->with('success', 'Appointment deleted successfully.');
     }
+
+    /**
+     * Display a listing of the resource for API.
+     */
+    public function apiIndex()
+    {
+        dd('API Index called');
+        $appointments = \Spatie\GoogleCalendar\Event::get();
+
+        $filteredAppointments = $appointments->filter(function ($appointment) {
+            return $appointment->colorId === '3';
+        });
+
+        $filteredAppointmentsArray = $filteredAppointments->map(function ($appointment) {
+            return [
+                'id' => $appointment->id,
+                'name' => $appointment->name,
+                'description' => $appointment->description,
+                'location' => $appointment->location,
+                'startDateTime' => $appointment->startDateTime,
+                'endDateTime' => $appointment->endDateTime,
+                'colorId' => $appointment->colorId,
+            ];
+        })->values()->toArray();
+
+        return response()->json($filteredAppointmentsArray);
+    }
 }
