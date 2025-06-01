@@ -2,28 +2,15 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import ThemeToggle from '@/Components/ThemeToggle';
 import { Link, usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
     const { flash } = usePage().props;
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-    const [isDarkMode, setIsDarkMode] = useState(false);
-
-    useEffect(() => {
-        const darkModePreference = localStorage.getItem('darkMode') === 'true';
-        setIsDarkMode(darkModePreference);
-        document.documentElement.classList.toggle('dark', darkModePreference);
-    }, []);
-
-    const toggleDarkMode = () => {
-        const newMode = !isDarkMode;
-        setIsDarkMode(newMode);
-        localStorage.setItem('darkMode', newMode);
-        document.documentElement.classList.toggle('dark', newMode);
-    };
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -49,6 +36,15 @@ export default function AuthenticatedLayout({ header, children }) {
                                     active={route().current(
                                         'appointments.index',
                                     )}
+                                    onClick={(e) => {
+                                        if (
+                                            route().current(
+                                                'appointments.index',
+                                            )
+                                        ) {
+                                            e.preventDefault();
+                                        }
+                                    }}
                                 >
                                     Appointments
                                 </NavLink>
@@ -62,14 +58,10 @@ export default function AuthenticatedLayout({ header, children }) {
                         </div>
 
                         <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <button
-                                onClick={toggleDarkMode}
-                                className="px-3 py-2 text-sm font-medium text-gray-500 transition duration-150 ease-in-out bg-gray-200 border border-transparent rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
-                            >
-                                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-                            </button>
-
-                            <div className="relative ms-3">
+                            <div className="me-3">
+                                <ThemeToggle />
+                            </div>
+                            <div className="relative">
                                 <Dropdown>
                                     <Dropdown.Trigger>
                                         <span className="inline-flex rounded-md">
@@ -192,7 +184,9 @@ export default function AuthenticatedLayout({ header, children }) {
                         </div>
 
                         <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('appointments.index')}>
+                            <ResponsiveNavLink
+                                href={route('appointments.index')}
+                            >
                                 Appointments
                             </ResponsiveNavLink>
                             <ResponsiveNavLink href={route('customers.index')}>
@@ -223,13 +217,17 @@ export default function AuthenticatedLayout({ header, children }) {
 
             {/* Flash Message Section */}
             {flash && flash.success && (
-                <div className="px-4 py-2 mx-auto my-4 text-sm text-green-700 bg-green-100 border border-green-400 rounded max-w-7xl sm:px-6 lg:px-8">
-                    {flash.success}
+                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                    <div className="px-4 py-2 my-4 text-sm text-green-700 bg-green-100 border border-green-400 rounded">
+                        {flash.success}
+                    </div>
                 </div>
             )}
             {flash && flash.error && (
-                <div className="px-4 py-2 mx-auto my-4 text-sm text-red-700 bg-red-100 border border-red-400 rounded max-w-7xl sm:px-6 lg:px-8">
-                    {flash.error}
+                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                    <div className="px-4 py-2 my-4 text-sm text-red-700 bg-red-100 border border-red-400 rounded">
+                        {flash.error}
+                    </div>
                 </div>
             )}
 

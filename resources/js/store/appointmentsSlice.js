@@ -16,7 +16,11 @@ const appointmentsSlice = createSlice({
         loading: false,
         error: null,
     },
-    reducers: {},
+    reducers: {
+        addAppointment: (state, action) => {
+            state.items.unshift(action.payload);
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchAppointments.pending, (state) => {
@@ -33,5 +37,7 @@ const appointmentsSlice = createSlice({
             });
     },
 });
+
+export const { addAppointment } = appointmentsSlice.actions;
 
 export default appointmentsSlice.reducer;

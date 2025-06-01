@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { formatDateTime } from '@/Utils/dateUtils';
+import { addAppointment } from '@/store/appointmentsSlice';
 
-export default function Index({ appointments }) {
-    const appointmentList = Array.isArray(appointments) ? appointments : [];
+export default function Index() {
+    const appointmentList = useSelector(state => state.appointments.items);
+    const dispatch = useDispatch();
+    const { newAppointment } = usePage().props;
+
+    useEffect(() => {
+        if (newAppointment) {
+            dispatch(addAppointment(newAppointment));
+        }
+    }, [newAppointment, dispatch]);
 
     return (
         <AuthenticatedLayout
@@ -27,11 +37,11 @@ export default function Index({ appointments }) {
             <div className="py-12">
                 <div className="mx-auto space-y-6 max-w-7xl sm:px-6 lg:px-8">
                     <div className="p-4 bg-white shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                        {appointmentList.length > 0 ? (
+                        {appointmentList && appointmentList.length > 0 ? (
                             <ul className="space-y-4">
                                 {appointmentList.map((appointment, index) => (
                                     <li
-                                        key={index}
+                                        key={appointment.id || index}
                                         className="p-4 transition-colors bg-gray-100 rounded dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
                                     >
                                         <Link

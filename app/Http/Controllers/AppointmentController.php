@@ -15,27 +15,29 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        $appointments = Event::get();
+        // $appointments = Event::get();
 
-        $filteredAppointments = $appointments->filter(function ($appointment) {
-            return $appointment->colorId === '3';
-        });
+        // $filteredAppointments = $appointments->filter(function ($appointment) {
+        //     return $appointment->colorId === '3';
+        // });
 
-        $filteredAppointmentsArray = $filteredAppointments->map(function ($appointment) {
-            return [
-                'id' => $appointment->id,
-                'name' => $appointment->name,
-                'description' => $appointment->description,
-                'location' => $appointment->location,
-                'startDateTime' => $appointment->startDateTime,
-                'endDateTime' => $appointment->endDateTime,
-                'colorId' => $appointment->colorId,
-            ];
-        })->values()->toArray();
+        // $filteredAppointmentsArray = $filteredAppointments->map(function ($appointment) {
+        //     return [
+        //         'id' => $appointment->id,
+        //         'name' => $appointment->name,
+        //         'description' => $appointment->description,
+        //         'location' => $appointment->location,
+        //         'startDateTime' => $appointment->startDateTime,
+        //         'endDateTime' => $appointment->endDateTime,
+        //         'colorId' => $appointment->colorId,
+        //     ];
+        // })->values()->toArray();
 
-        return Inertia::render('Appointments/Index', [
-            'appointments' => $filteredAppointmentsArray,
-        ]);
+        // return Inertia::render('Appointments/Index', [
+        //     'appointments' => $filteredAppointmentsArray,
+        // ]);
+
+        return Inertia::render('Appointments/Index');
     }
 
     /**
@@ -90,7 +92,34 @@ class AppointmentController extends Controller
             $event->save();
         }
 
-        return redirect()->route('appointments.index')->with('success', 'Appointment created successfully with attendee.');
+        if ($request->wantsJson()) {
+            return response()->json([
+                'appointment' => [
+                    'id' => $event->id,
+                    'name' => $event->name,
+                    'description' => $event->description,
+                    'location' => $event->location,
+                    'startDateTime' => $event->startDateTime,
+                    'endDateTime' => $event->endDateTime,
+                    'colorId' => $event->colorId,
+                ]
+            ]);
+        }
+
+        $appointment = [
+            'id' => $event->id,
+            'name' => $event->name,
+            'description' => $event->description,
+            'location' => $event->location,
+            'startDateTime' => $event->startDateTime,
+            'endDateTime' => $event->endDateTime,
+            'colorId' => $event->colorId,
+        ];
+
+        return redirect()
+            ->route('appointments.index')
+            ->with('success', 'Appointment created successfully.')
+            ->with('newAppointment', $appointment);
     }
 
     /**
@@ -164,8 +193,7 @@ class AppointmentController extends Controller
      */
     public function apiIndex()
     {
-        dd('API Index called');
-        $appointments = \Spatie\GoogleCalendar\Event::get();
+        $appointments = Event::get();
 
         $filteredAppointments = $appointments->filter(function ($appointment) {
             return $appointment->colorId === '3';

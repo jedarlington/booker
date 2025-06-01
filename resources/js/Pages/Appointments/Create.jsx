@@ -1,4 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { addAppointment } from '@/store/appointmentsSlice';
+import { useDispatch } from 'react-redux';
+import { router } from '@inertiajs/react';
 
 import { useEffect, useRef } from 'react';
 
@@ -15,12 +18,20 @@ export default function Create({ customers }) {
         customer_id: ''
     });
 
+    const dispatch = useDispatch();
+
     const autocompleteRef = useRef(null);
     const location = useRef(null);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/appointments');
+        post('/appointments', {
+            onSuccess: (page) => {
+                if (page && page.props && page.props.appointment) {
+                    dispatch(addAppointment(page.props.appointment));
+                }
+            },
+        });
     };
 
     useEffect(() => {
