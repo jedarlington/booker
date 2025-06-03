@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { formatDateTime } from '@/Utils/dateUtils';
-import { addAppointment } from '@/store/appointmentsSlice';
+import { addAppointment, removeAppointment } from '@/store/appointmentsSlice';
 
 export default function Index() {
     const appointmentList = useSelector(state => state.appointments.items);
@@ -11,10 +11,21 @@ export default function Index() {
     const { newAppointment } = usePage().props;
 
     useEffect(() => {
-        if (newAppointment) {
+        if (
+            newAppointment &&
+            !appointmentList.some(a => String(a.id) === String(newAppointment.id))
+        ) {
             dispatch(addAppointment(newAppointment));
         }
-    }, [newAppointment, dispatch]);
+    }, [newAppointment, appointmentList, dispatch]);
+
+    const handleDelete = (id, e) => {
+        if (!confirm('Are you sure you want to delete this appointment?')) {
+            e.preventDefault();
+            return;
+        }
+        dispatch(removeAppointment(id));
+    };
 
     return (
         <AuthenticatedLayout
@@ -36,39 +47,55 @@ export default function Index() {
 
             <div className="py-12">
                 <div className="mx-auto space-y-6 max-w-7xl sm:px-6 lg:px-8">
-                    <div className="p-4 bg-white shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                        {appointmentList && appointmentList.length > 0 ? (
-                            <ul className="space-y-4">
-                                {appointmentList.map((appointment, index) => (
-                                    <li
-                                        key={appointment.id || index}
-                                        className="p-4 transition-colors bg-gray-100 rounded dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
-                                    >
-                                        <Link
-                                            href={`/appointments/${appointment.id}`}
-                                            className="block"
-                                        >
-                                            <h3 className="mb-4 text-lg font-bold text-gray-800 dark:text-gray-200">
+                    <div className="bg-white shadow sm:rounded-lg dark:bg-gray-800">
+                        {appointmentList.length > 0 ? (
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50 dark:bg-gray-700">
+                                    <tr>
+                                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Summary</th>
+                                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Start</th>
+                                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">End</th>
+                                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                                    {appointmentList.map((appointment) => (
+                                        <tr key={appointment.id}>
+                                            <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap dark:text-gray-200">
                                                 {appointment.name || 'No Title'}
-                                            </h3>
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                <strong>Start:</strong> {appointment.startDateTime
-                                                    ? formatDateTime(appointment.startDateTime)
-                                                    : 'No Start Date'}
-                                            </p>
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                <strong>End:</strong> {appointment.endDateTime
-                                                    ? formatDateTime(appointment.endDateTime)
-                                                    : 'No End Date'}
-                                            </p>
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                                {formatDateTime(appointment.startDateTime)}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                                {formatDateTime(appointment.endDateTime)}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
+                                                <Link
+                                                    href={`/appointments/${appointment.id}`}
+                                                    className="mr-2 text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                                                >
+                                                    View
+                                                </Link>
+                                                <Link
+                                                    href={`/appointments/${appointment.id}/edit`}
+                                                    className="mr-2 text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300"
+                                                >
+                                                    Edit
+                                                </Link>
+                                                <button
+                                                    onClick={e => handleDelete(appointment.id, e)}
+                                                    className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         ) : (
-                            <p className="text-gray-600 dark:text-gray-400">
-                                No appointments available.
-                            </p>
+                            <p className="text-gray-600 dark:text-gray-400">No appointments found.</p>
                         )}
                     </div>
                 </div>

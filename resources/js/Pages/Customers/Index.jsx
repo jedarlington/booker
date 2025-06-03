@@ -43,7 +43,7 @@ export default function Index({ customers }) {
 
             <div className="py-12">
                 <div className="mx-auto space-y-6 max-w-7xl sm:px-6 lg:px-8">
-                    <div className="p-4 bg-white shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
+                    <div className="bg-white shadow sm:rounded-lg dark:bg-gray-800">
                         {customers.length > 0 ? (
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50 dark:bg-gray-700">

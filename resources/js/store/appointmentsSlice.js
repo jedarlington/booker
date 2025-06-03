@@ -20,6 +20,9 @@ const appointmentsSlice = createSlice({
         addAppointment: (state, action) => {
             state.items.unshift(action.payload);
         },
+        removeAppointment: (state, action) => {
+            state.items = state.items.filter(item => String(item.id) !== String(action.payload));
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -38,6 +41,6 @@ const appointmentsSlice = createSlice({
     },
 });
 
-export const { addAppointment } = appointmentsSlice.actions;
+export const { addAppointment, removeAppointment } = appointmentsSlice.actions;
 
 export default appointmentsSlice.reducer;
