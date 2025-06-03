@@ -67,11 +67,11 @@ class AppointmentController extends Controller
             'customer_id' => 'required|exists:customers,id'
         ]);
 
-        // Fetch the customer's email address
-        $customer = Customer::findOrFail($validated['customer_id']);
+        // Fetch the customer's email address so we can add them as an attendee
+        // $customer = Customer::findOrFail($validated['customer_id']);
 
         // Create the event with the attendee
-        $event = Event::create([
+        $appointment = Event::create([
             'name' => $validated['summary'],
             'description' => $validated['description'],
             'location' => $validated['location'],
@@ -88,33 +88,9 @@ class AppointmentController extends Controller
         // }
 
         if (!empty($validated['colorId'])) {
-            $event->setColorId($validated['colorId']);
-            $event->save();
+            $appointment->setColorId($validated['colorId']);
+            $appointment->save();
         }
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'appointment' => [
-                    'id' => $event->id,
-                    'name' => $event->name,
-                    'description' => $event->description,
-                    'location' => $event->location,
-                    'startDateTime' => $event->startDateTime,
-                    'endDateTime' => $event->endDateTime,
-                    'colorId' => $event->colorId,
-                ]
-            ]);
-        }
-
-        $appointment = [
-            'id' => $event->id,
-            'name' => $event->name,
-            'description' => $event->description,
-            'location' => $event->location,
-            'startDateTime' => $event->startDateTime,
-            'endDateTime' => $event->endDateTime,
-            'colorId' => $event->colorId,
-        ];
 
         return redirect()
             ->route('appointments.index')
